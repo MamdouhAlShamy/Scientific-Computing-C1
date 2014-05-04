@@ -16,7 +16,7 @@ using namespace std;
 Newton::Newton() {
 
 }
-vector<Point> Newton::solve(vector<Point> data, int start, int end, int step) {
+vector<Point> Newton::solve(vector<Point> data, int start, int end, float step) {
 
 	int i, j, k , m;
 	vector<Point> search;

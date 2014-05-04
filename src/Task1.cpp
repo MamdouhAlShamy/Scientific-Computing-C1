@@ -30,7 +30,7 @@ void help() {
 
 template<class Interpolate_Algo>
 void interpolate(string input_file_name, string output_prefix, int start,
-		int end, int step, int no_samples_used) {
+		int end, float step, int no_samples_used) {
 	ifstream inputfile(input_file_name.c_str());
 	vector<Point> input;
 	double x, y;
@@ -74,6 +74,25 @@ int main(int argc, char* argv[]) {
 
 		m[1] = vector<double>(3);
 		m[1][0] = -1, m[1][1] = 2, m[1][2] = 2;
+
+//		int n = 3;
+//		vector<vector<double> > m(n);
+//		m[0] = vector<double>(4);
+//		m[0][0] = 1;
+//		m[0][1] = 1;
+//		m[0][2] = 1;
+//		m[0][3] = 25000;
+//		m[1] = vector<double>(4);
+//		m[1][0] = 0;
+//		m[1][1] = 0.01;
+//		m[1][2] = 0.02;
+//		m[1][3] = 120;
+//		m[2] = vector<double>(4);
+//		m[2][0] = 0;
+//		m[2][1] = 1;
+//		m[2][2] = -1;
+//		m[2][3] = 6000;
+
 		vector<double> res = solver.solve(m, n);
 		for (int i = 0; i < n; i++) {
 			cout << res[i] << " ";
@@ -86,9 +105,10 @@ int main(int argc, char* argv[]) {
 		string output_file = argv[4];
 		int start = atoi(argv[5]);
 		int end = atoi(argv[6]);
-		int step = atoi(argv[7]);
+		float step = atof(argv[7]);
 		int no_sample_points_used = atoi(argv[8]);
 		if (algorithm.compare("--cubic") == 0) {
+			cout << "Interpolating using Cubic Spline" << endl;
 			interpolate<CubicSpline>(input_file, output_file, start, end, step,
 					no_sample_points_used);
 		} else if (algorithm.compare("--newton") == 0) {

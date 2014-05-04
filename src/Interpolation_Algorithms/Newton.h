@@ -13,7 +13,8 @@
 class Newton: public IinterpolationAlgorithm {
 public:
 	Newton();
-	std::vector<Point > solve(std::vector<Point> data,int start,int end,int step);
+	std::vector<Point> solve(std::vector<Point> data, int start, int end,
+			float step);
 	virtual ~Newton();
 };
 

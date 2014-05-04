@@ -14,7 +14,7 @@ public:
 	IinterpolationAlgorithm(){}
 	//function take data and interpolate through range start and end with step
 	//if you need another argument add it to the constructor of the implementor class
-	virtual std::vector<Point > solve(std::vector<Point> data,int start,int end,int step)=0;
+	virtual std::vector<Point > solve(std::vector<Point> data,int start,int end,float step)=0;
 	virtual ~IinterpolationAlgorithm(){}
 };
 
