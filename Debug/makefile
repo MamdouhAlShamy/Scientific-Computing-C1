@@ -8,6 +8,7 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include src/Regression_Algorithms/subdir.mk
 -include src/Linear_Equ_Solving_Algorithms/subdir.mk
 -include src/Interpolation_Algorithms/subdir.mk
 -include src/subdir.mk
