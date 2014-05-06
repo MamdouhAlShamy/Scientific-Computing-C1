@@ -8,15 +8,15 @@ xs=range(-1*maxx,maxx,step_size)
 
 fd=file("p_first_degree.dat" ,'w')
 a=2
-b=3
+b=0
 for x in xs:
 	fd.write( "%d\t%d\n" %(x,a*x+b))
 fd.close()
 
 sd=file("p_second_degree.dat" ,'w')
 a=1
-b=-3
-c=-9
+b=2
+c=4
 for x in xs:
         sd.write( "%d\t%d\n" %(x,a*x**2+b*x+c))
 
@@ -35,8 +35,8 @@ td.close()
 sin=file("sin.dat" ,'w')
 a=2
 
-for x in xs[800:1200]:
-        sin.write( "%d\t%f\n" %(x,float(a)*math.sin(x)))
+for x in range(-360,360):
+        sin.write( "%d\t%f\n" %(x,float(a)*math.sin(math.radians(x))))
 sin.close()
 
 
@@ -47,7 +47,7 @@ b=4
 c=-2
 d=10
 e=12
-for x in xs:
+for x in range(-360,360):
         strange.write( "%d\t%d\n" %(x,int((a*math.sin(x)+b*x**3+c*x**2))))
 strange.close()
 

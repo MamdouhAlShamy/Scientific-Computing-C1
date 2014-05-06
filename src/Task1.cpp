@@ -30,9 +30,9 @@ void help() {
 }
 
 
-template<class Regression_Algo>
+
 void regress(string input_file_name, string output_prefix, int start,
-		int end, float step, int no_samples_used) {
+		int end, float step, int no_samples_used,IRegression_Algorithm* regress) {
 	ifstream inputfile(input_file_name.c_str());
 	vector<Point> input;
 	double x, y;
@@ -46,8 +46,8 @@ void regress(string input_file_name, string output_prefix, int start,
 	}
 	cout << "data size: " << input.size() << endl;
 
-	Regression_Algo regress;
-	vector<Point> res = regress.solve(input, start, end, step);
+
+	vector<Point> res = regress->solve(input, start, end, step);
 	ofstream output_dat(string(output_prefix + "out.dat").c_str());
 	for (int i = 0; i < res.size() - 1; i++)
 		output_dat << res.at(i).x << "\t" << res.at(i).y << endl;
@@ -77,6 +77,15 @@ void interpolate(string input_file_name, string output_prefix, int start,
 
 	Interpolate_Algo interpolater;
 	vector<Point> res = interpolater.solve(input, start, end, step);
+	double nan=1.0/0.0;
+	for (int i =0; i < res.size();i++)
+	{
+		if(res[i].y !=res[i].y)
+		{
+			res.erase(res.begin()+i);
+			i--;
+		}
+	}
 	ofstream output_dat(string(output_prefix + "out.dat").c_str());
 	for (int i = 0; i < res.size() - 1; i++)
 		output_dat << res.at(i).x << "\t" << res.at(i).y << endl;
@@ -89,6 +98,7 @@ void interpolate(string input_file_name, string output_prefix, int start,
 }
 
 int main(int argc, char* argv[]) {
+	cout<<1.0/0.0<<endl;
 	if (argc > 1 && string("--help").compare(argv[1]) == 0) {
 		help();
 		return -1;
@@ -163,12 +173,14 @@ int main(int argc, char* argv[]) {
 		int no_sample_points_used = atoi(argv[8]);
 		if (algorithm.compare("--linear") == 0) {
 			cout << "Using Linear Regression" << endl;
-			regress<Linear_Regression_Algorithm>(input_file, output_file, start, end, step,
-					no_sample_points_used);
-		} else if (algorithm.compare("--newton") == 0) {
-			cout << "Using Polynomial" << endl;
-			interpolate<Newton>(input_file, output_file, start, end, step,
-					no_sample_points_used);
+			IRegression_Algorithm* regresss=new Linear_Regression_Algorithm();
+			regress(input_file, output_file, start, end, step,
+					no_sample_points_used,regresss);
+		} else if (algorithm.compare("--polynomial") == 0) {
+			int order=atoi(argv[9]);
+			IRegression_Algorithm * regresss=new Polynomial_Regression_Algorithm(order);
+			regress(input_file, output_file, start, end, step,
+					no_sample_points_used,regresss);
 		} else {
 			cerr << algorithm << " is not supported" << endl;
 			help();

@@ -10,6 +10,7 @@
 
 #include "IRegressionAlgorithm.h"
 #include "LinearRegressionAlgorithm.h"
+#include "PolynomialRegressionAlgorithm.h"
 
 
 #endif /* REGRESSION_ALGORITHMS_H_ */

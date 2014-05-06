@@ -11,6 +11,6 @@ gnuplot  << __EOF
 set autoscale
 set term png
 set output '$OutputImage'
-plot '$True_data' with lines ,'$Out_data' with lines 
+plot '$True_data' w linespoints ,'$Out_data' w linespoints
 __EOF
 eog $OutputImage &
