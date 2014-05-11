@@ -78,14 +78,14 @@ void interpolate(string input_file_name, string output_prefix, int start,
 	Interpolate_Algo interpolater;
 	vector<Point> res = interpolater.solve(input, start, end, step);
 	double nan=1.0/0.0;
-	for (int i =0; i < res.size();i++)
-	{
-		if(res[i].y !=res[i].y)
-		{
-			res.erase(res.begin()+i);
-			i--;
-		}
-	}
+//	for (int i =0; i < res.size();i++)
+//	{
+//		if(res[i].y !=res[i].y)
+//		{
+//			res.erase(res.begin()+i);
+//			i--;
+//		}
+//	}
 	ofstream output_dat(string(output_prefix + "out.dat").c_str());
 	for (int i = 0; i < res.size() - 1; i++)
 		output_dat << res.at(i).x << "\t" << res.at(i).y << endl;
@@ -98,7 +98,7 @@ void interpolate(string input_file_name, string output_prefix, int start,
 }
 
 int main(int argc, char* argv[]) {
-	cout<<1.0/0.0<<endl;
+	//cout<<1.0/0.0<<endl;
 	if (argc > 1 && string("--help").compare(argv[1]) == 0) {
 		help();
 		return -1;
