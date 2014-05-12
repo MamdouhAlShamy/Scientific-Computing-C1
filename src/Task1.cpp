@@ -101,6 +101,9 @@ int main(int argc, char* argv[]) {
 		help();
 		return -1;
 	}
+
+
+
 	srand(time(NULL));
 	if (string("--solve").compare(argv[1]) == 0) {
 		cout << "sss" << endl;
