@@ -32,22 +32,20 @@ void help() {
 
 
 void regress(string input_file_name, string output_prefix, int start,
-		int end, float step, int no_samples_used,IRegression_Algorithm* regress) {
+		int end, float step,IRegression_Algorithm* regress) {
 	ifstream inputfile(input_file_name.c_str());
 	vector<Point> input;
 	double x, y;
 	while (inputfile >> x >> y) {
 		input.push_back(Point(x, y));
 	}
-	while (input.size() > no_samples_used) //get random sample
-	{
-		int victim = rand() % input.size();
-		input.erase(input.begin() + victim);
-	}
+
 	cout << "data size: " << input.size() << endl;
 
 
 	vector<Point> res = regress->solve(input, start, end, step);
+	if ( res.size()==0 )
+		return ;
 	ofstream output_dat(string(output_prefix + "out.dat").c_str());
 	for (int i = 0; i < res.size() - 1; i++)
 		output_dat << res.at(i).x << "\t" << res.at(i).y << endl;
@@ -98,7 +96,6 @@ void interpolate(string input_file_name, string output_prefix, int start,
 }
 
 int main(int argc, char* argv[]) {
-	cout<<1.0/0.0<<endl;
 	if (argc > 1 && string("--help").compare(argv[1]) == 0) {
 		help();
 		return -1;
@@ -169,18 +166,18 @@ int main(int argc, char* argv[]) {
 		string output_file = argv[4];
 		int start = atoi(argv[5]);
 		int end = atoi(argv[6]);
+
 		float step = atof(argv[7]);
-		int no_sample_points_used = atoi(argv[8]);
 		if (algorithm.compare("--linear") == 0) {
 			cout << "Using Linear Regression" << endl;
 			IRegression_Algorithm* regresss=new Linear_Regression_Algorithm();
 			regress(input_file, output_file, start, end, step,
-					no_sample_points_used,regresss);
+					regresss);
 		} else if (algorithm.compare("--polynomial") == 0) {
-			int order=atoi(argv[9]);
+			int order=atoi(argv[8]);
 			IRegression_Algorithm * regresss=new Polynomial_Regression_Algorithm(order);
 			regress(input_file, output_file, start, end, step,
-					no_sample_points_used,regresss);
+					regresss);
 		} else {
 			cerr << algorithm << " is not supported" << endl;
 			help();
