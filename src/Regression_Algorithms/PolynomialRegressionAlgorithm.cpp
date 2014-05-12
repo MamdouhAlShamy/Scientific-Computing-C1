@@ -9,6 +9,7 @@
 #include "../Linear_Equ_Solving_Algorithms/Solvers.h"
 #include "iostream"
 #include <math.h>
+
 using namespace std;
 Polynomial_Regression_Algorithm::Polynomial_Regression_Algorithm(int o):order(o) {
 	// TODO Auto-generated constructor stub
@@ -54,6 +55,7 @@ std::vector<Point > Polynomial_Regression_Algorithm::solve(std::vector<Point> da
 		}
 	}
 	GAUSSIAN_ELIMINATION_Solver solver;
+	//GaussianSeidel solver(0.00001);
 	vector<double>as= solver.solve(augmented_matrix,order+1);
 	for(double x=start;x<end;x+=step)
 	{
@@ -64,6 +66,18 @@ std::vector<Point > Polynomial_Regression_Algorithm::solve(std::vector<Point> da
 		}
 		result.push_back(Point(x,y));
 	}
+	  double sr =0;
+	   for(int i=0;i<data.size();i++)
+	   {
+		   double y=0;
+		   double x=data[i].x;
+		   		for(int i=0;i<=order;i++)
+		   		{
+		   			y+=pow(x,i)*as[i];
+		   		}
+		   sr+=pow(data[i].y-y,2);
+	   }
+	   cout<<"Regression Error = "<<sr<<endl;
 	return result;
 }
 

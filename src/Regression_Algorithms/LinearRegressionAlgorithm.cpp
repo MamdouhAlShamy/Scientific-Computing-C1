@@ -6,6 +6,9 @@
  */
 
 #include "LinearRegressionAlgorithm.h"
+#include <iostream>
+#include <math.h>
+using namespace std;
 
 Linear_Regression_Algorithm::Linear_Regression_Algorithm() {
 	// TODO Auto-generated constructor stub
@@ -29,6 +32,12 @@ std::vector<Point > Linear_Regression_Algorithm::solve(std::vector<Point> data,i
    {
 	   result.push_back(Point(x,a0+a1*x));
    }
+   double sr =0;
+   for(int i=0;i<data.size();i++)
+   {
+	   sr+=pow(data[i].y-(a0+a1*data[i].x),2);
+   }
+   cout<<"Regression Error = "<<sr<<endl;
    return result;
 }
 
