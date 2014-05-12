@@ -59,18 +59,14 @@ void regress(string input_file_name, string output_prefix, int start,
 
 template<class Interpolate_Algo>
 void interpolate(string input_file_name, string output_prefix, int start,
-		int end, float step, int no_samples_used) {
+		int end, float step) {
 	ifstream inputfile(input_file_name.c_str());
 	vector<Point> input;
 	double x, y;
 	while (inputfile >> x >> y) {
 		input.push_back(Point(x, y));
 	}
-	while (input.size() > no_samples_used) //get random sample
-	{
-		int victim = rand() % input.size();
-		input.erase(input.begin() + victim);
-	}
+
 	cout << "data size: " << input.size() << endl;
 
 	Interpolate_Algo interpolater;
@@ -106,34 +102,34 @@ int main(int argc, char* argv[]) {
 
 	srand(time(NULL));
 	if (string("--solve").compare(argv[1]) == 0) {
-		cout << "sss" << endl;
-		const int n = 2;
-		GAUSSIAN_ELIMINATION_Solver solver = GAUSSIAN_ELIMINATION_Solver();
+		cout << "ssssss" << endl;
+	//	const int n = 2;
+		GaussianSeidel solver = GaussianSeidel(0.00001);
 
-		vector<vector<double> > m(2);
-		m[0] = vector<double>(3);
-		m[0][0] = 3, m[0][1] = 2, m[0][2] = 18;
+//		vector<vector<double> > m(2);
+//		m[0] = vector<double>(3);
+//		m[0][0] = 3, m[0][1] = -0.1, m[0][2] = 18;
+//
+//		m[1] = vector<double>(3);
+//		m[1][0] = -1, m[1][1] = 2, m[1][2] = 2;
 
-		m[1] = vector<double>(3);
-		m[1][0] = -1, m[1][1] = 2, m[1][2] = 2;
-
-		// int n = 3;
-		// vector<vector<double> > m(n);
-		// m[0] = vector<double>(4);
-		// m[0][0] = 1;
-		// m[0][1] = 1;
-		// m[0][2] = 1;
-		// m[0][3] = 25000;
-		// m[1] = vector<double>(4);
-		// m[1][0] = 0;
-		// m[1][1] = 0.01;
-		// m[1][2] = 0.02;
-		// m[1][3] = 120;
-		// m[2] = vector<double>(4);
-		// m[2][0] = 0;
-		// m[2][1] = 1;
-		// m[2][2] = -1;
-		// m[2][3] = 6000;
+		 int n = 3;
+		 vector<vector<double> > m(n);
+		 m[0] = vector<double>(4);
+		 m[0][0] = 3;
+		 m[0][1] = -0.1;
+		 m[0][2] = -0.2;
+		 m[0][3] = 7.85;
+		 m[1] = vector<double>(4);
+		 m[1][0] = 0.1;
+		 m[1][1] = 7;
+		 m[1][2] = -0.3;
+		 m[1][3] = -19.3;
+		 m[2] = vector<double>(4);
+		 m[2][0] = 0.3;
+		 m[2][1] = -0.2;
+		 m[2][2] = 10;
+		 m[2][3] = 71.4;
 
 		vector<double> res = solver.solve(m, n);
 		for (int i = 0; i < n; i++) {
@@ -148,15 +144,12 @@ int main(int argc, char* argv[]) {
 		int start = atoi(argv[5]);
 		int end = atoi(argv[6]);
 		float step = atof(argv[7]);
-		int no_sample_points_used = atoi(argv[8]);
 		if (algorithm.compare("--cubic") == 0) {
 			cout << "Interpolating using Cubic Spline" << endl;
-			interpolate<CubicSpline>(input_file, output_file, start, end, step,
-					no_sample_points_used);
+			interpolate<CubicSpline>(input_file, output_file, start, end, step);
 		} else if (algorithm.compare("--newton") == 0) {
 			cout << "Interpolating using Newton" << endl;
-			interpolate<Newton>(input_file, output_file, start, end, step,
-					no_sample_points_used);
+			interpolate<Newton>(input_file, output_file, start, end, step);
 		} else {
 			cerr << algorithm << " is not supported" << endl;
 			help();

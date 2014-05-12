@@ -7,7 +7,7 @@
 
 #include "CubicSpline.h"
 
-#include "../Linear_Equ_Solving_Algorithms/GAUSSIANELIMINATIONSolver.h"
+#include "../Linear_Equ_Solving_Algorithms/Solvers.h"
 
 CubicSpline::CubicSpline() {
 
@@ -74,7 +74,8 @@ double CubicSpline::interpolate(vector<Point> data, double * d2x, double xu) {
 
 vector<double> CubicSpline::subst(double * e, double * f, double * g,
 		double * r) {
-	GAUSSIAN_ELIMINATION_Solver solver = GAUSSIAN_ELIMINATION_Solver();
+	GaussianSeidel solver = GaussianSeidel(0.000001);
+//	GAUSSIAN_ELIMINATION_Solver solver =GAUSSIAN_ELIMINATION_Solver();
 	int numberOfEquations = 2;
 	vector<vector<double> > m(numberOfEquations);
 	m[0] = vector<double>(3);

@@ -10,6 +10,6 @@
 
 #include "ISolver.h"
 #include "GAUSSIANELIMINATIONSolver.h"
-
+#include "GaussianSeidel.h"
 
 #endif /* SOLVERS_H_ */
