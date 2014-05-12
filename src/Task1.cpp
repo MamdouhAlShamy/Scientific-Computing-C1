@@ -172,7 +172,6 @@ int main(int argc, char* argv[]) {
 		int end = atoi(argv[6]);
 
 		float step = atof(argv[7]);
-		int no_sample_points_used = atoi(argv[8]);
 		if (algorithm.compare("--linear") == 0) {
 			cout << "Using Linear Regression" << endl;
 			IRegression_Algorithm* regresss=new Linear_Regression_Algorithm();
