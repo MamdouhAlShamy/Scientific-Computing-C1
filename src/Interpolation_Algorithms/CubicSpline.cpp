@@ -36,20 +36,21 @@ void CubicSpline::tridiag(vector<Point> data, double* e, double* f, double* g,
 	f[numberOfIntervals - 1] = 2
 			* (data[numberOfIntervals].x - data[numberOfIntervals - 2].x);
 	g[numberOfIntervals - 1] = 0; //data[n].x - data[n - 1].x;
-	r[numberOfIntervals - 1] =
-			(6.0 /  (data[numberOfIntervals].x - data[numberOfIntervals - 1].x) )
-							* ( data[numberOfIntervals].y - data[numberOfIntervals - 1].y);
+	r[numberOfIntervals - 1] = (6.0
+			/ (data[numberOfIntervals].x - data[numberOfIntervals - 1].x))
+			* (data[numberOfIntervals].y - data[numberOfIntervals - 1].y);
 	r[numberOfIntervals - 1] = r[numberOfIntervals - 1]
-			+ ( (6.0/ ((data[numberOfIntervals - 1].x - data[numberOfIntervals - 2].x)))
-							* ( data[numberOfIntervals - 2].y - data[numberOfIntervals - 1].y));
+			+ ((6.0
+					/ ((data[numberOfIntervals - 1].x
+							- data[numberOfIntervals - 2].x)))
+					* (data[numberOfIntervals - 2].y
+							- data[numberOfIntervals - 1].y));
 
 }
 
 double CubicSpline::interpolate(vector<Point> data, double * d2x, double xu) {
 	int i = 1;
-	int q = data.size();
 	int intervals = data.size() - 1;
-	double c1[intervals], c2[intervals], c3[intervals], c4[intervals];
 	while (i <= intervals) {
 		// check if it is in the intervals
 		if (xu >= data[i - 1].x && xu <= data[i].x) {
@@ -84,15 +85,7 @@ vector<double> CubicSpline::subst(double * e, double * f, double * g,
 	m[1][0] = e[2];
 	m[1][1] = f[2];
 	m[1][2] = r[2];
-//	m[2] = vector<double>(4);
-//	m[2][0] = e[3];
-//	m[2][1] = f[3];
-//	m[2][2] = g[3];
-//	m[2][3] = r[3];
 	vector<double> res = solver.solve(m, numberOfEquations);
-	for (int i = 0; i < numberOfEquations; i++) {
-		cout << res[i] << endl;
-	}
 	return res;
 }
 
@@ -109,32 +102,29 @@ vector<Point> CubicSpline::solve(vector<Point> data, int start, int end,
 	std::fill_n(dd2x, n, 0);
 
 	tridiag(data, e, f, g, r);
-	for (int i = 1; i < n-1; i++) {
+	for (int i = 1; i < n - 1; i++) {
 		cout << "e[" << i << "]" << '\t' << e[i] << endl;
 		cout << "f[" << i << "]" << '\t' << f[i] << endl;
 		cout << "g[" << i << "]" << '\t' << g[i] << endl;
 		cout << "r[" << i << "]" << '\t' << r[i] << endl;
 	}
 	double xu, yu;
-	//FIXME
-	xu = 5;
 	vector<double> d2x;
 	d2x = subst(e, f, g, r);
 	cout << "EQUATION SOLVED" << endl;
-	for (int i = 1; i < n-1; i++) {
+	for (int i = 1; i < n - 1; i++) {
 		dd2x[i] = d2x[i - 1];
 		cout << "dd2x" << dd2x[i] << endl;
 	}
 
-	//TODO LOOPING to make a curve
-//	for (xu = start; xu <= end; xu += step) {
-	yu = interpolate(data, dd2x, xu);
-	cout << "xu: " << xu << '\t' << "yu: " << yu << endl;
-	search.push_back(Point(xu, yu));
-//	}
+	// LOOPING to make a curve
+	for (xu = start; xu <= end; xu += step) {
+		yu = interpolate(data, dd2x, xu);
+		cout << "xu: " << xu << '\t' << "yu: " << yu << endl;
+		search.push_back(Point(xu, yu));
+	}
 	return search;
 }
 CubicSpline::~CubicSpline() {
-	//TODO
 }
 
