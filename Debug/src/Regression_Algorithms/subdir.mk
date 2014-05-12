@@ -4,17 +4,20 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
-../src/Task1.cpp 
+../src/Regression_Algorithms/LinearRegressionAlgorithm.cpp \
+../src/Regression_Algorithms/PolynomialRegressionAlgorithm.cpp 
 
 OBJS += \
-./src/Task1.o 
+./src/Regression_Algorithms/LinearRegressionAlgorithm.o \
+./src/Regression_Algorithms/PolynomialRegressionAlgorithm.o 
 
 CPP_DEPS += \
-./src/Task1.d 
+./src/Regression_Algorithms/LinearRegressionAlgorithm.d \
+./src/Regression_Algorithms/PolynomialRegressionAlgorithm.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
-src/%.o: ../src/%.cpp
+src/Regression_Algorithms/%.o: ../src/Regression_Algorithms/%.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
 	g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"

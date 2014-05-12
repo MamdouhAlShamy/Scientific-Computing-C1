@@ -29,8 +29,17 @@ c=3
 d=4
 for x in xs:
         td.write( "%d\t%d\n" %(x,a*x**3+b*x**2+c*x+d))
-
 td.close()
+
+td=file("p_third_degree_small_step.dat" ,'w')
+a=1
+b=2
+c=3
+d=4
+for x in range(-1*maxx,maxx,max([1,step_size/4])):
+        td.write( "%d\t%d\n" %(x,a*x**3+b*x**2+c*x+d))
+td.close()
+
 
 sin=file("sin.dat" ,'w')
 a=2

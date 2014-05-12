@@ -16,14 +16,15 @@ using namespace std;
 Newton::Newton() {
 
 }
-vector<Point> Newton::solve(vector<Point> data, int start, int end, float step) {
+vector<Point> Newton::solve(vector<Point> data, int start, int end,
+		float step) {
 
-	int i, j, k , m;
+	int i, j, k, m;
 	vector<Point> search;
 	float differ[data.size()][data.size()], product, sum;
 
 	// Get Y for desired X
-	for (float m = data.front().x + 1; m < data.back().x; m = m + step) {
+	for (float m = start + step; m < data.back().x; m += step) {
 
 		k = 0;
 		if (m < data.front().x || m > data.back().x) {
@@ -59,6 +60,7 @@ vector<Point> Newton::solve(vector<Point> data, int start, int end, float step) 
 			}
 		}
 		search.push_back(Point(m, sum));
+		cout << "x: " << m << '\t' << "y: " << sum << endl;
 	}
 
 	return search;
