@@ -27,7 +27,8 @@ private:
 	void tridiag(vector<Point> data, double * e, double* f, double* g,
 			double* r);
 	double interpolate(vector<Point> data, double * d2x, double xu);
-	vector<double> subst(double * e, double * f, double * g, double * r);
+	vector<double> subst(double * e, double * f, double * g, double * r,
+			int numberOfInterval);
 };
 
 #endif /* CUBICSPLINE_H_ */
