@@ -19,6 +19,18 @@
 using namespace std;
 void help() {
 	cout << "Welcome" << endl;
+	cout << "Regression: " << endl;
+		cout
+		<< "Usage : ./Task1 --regress <Algorithm> <Input file name> <Output Prefix> <Start> <End> <Step Size> <order> <linear quation solvers>"
+		<< endl;
+		;
+		cout << "Available Algorithms: " << endl;
+		cout << "\t--Linear" << endl;
+		cout << "\t--Polynomial" << endl;
+		cout << "Available Solvers: default (Elimination)" << endl;
+			cout << "\t--siedel" << endl;
+			cout << "\t--elimination" << endl;
+
 	cout << "interpolation: " << endl;
 	cout
 	<< "Usage : ./Task1 --interpolate <Algorithm> <Input file name> <Output Prefix> <Start> <End> <Step Size> <No of Points Used In Interpolation>"
@@ -104,7 +116,7 @@ int main(int argc, char* argv[]) {
 	if (string("--solve").compare(argv[1]) == 0) {
 		cout << "ssssss" << endl;
 	//	const int n = 2;
-		GaussianSeidel solver = GaussianSeidel(0.00001);
+		GaussianSeidel solver = GaussianSeidel(0.00000000000001);
 
 //		vector<vector<double> > m(2);
 //		m[0] = vector<double>(3);
@@ -172,7 +184,24 @@ int main(int argc, char* argv[]) {
 					regresss);
 		} else if (algorithm.compare("--polynomial") == 0) {
 			int order=atoi(argv[8]);
-			IRegression_Algorithm * regresss=new Polynomial_Regression_Algorithm(order);
+			bool solver=false;;
+			if(argc>9)
+			{
+				if(string("--seidel").compare(argv[9])==0)
+				{
+					solver=true;
+				}
+				else if(string("--elimination").compare(argv[9])==0)
+				{
+					solver=false;
+				}
+				else
+				{
+					cerr<<"Unkown Solver Algorithm : Gaussian elimination with partial pivoting is used instead"<<endl;
+				}
+			}
+
+			IRegression_Algorithm * regresss=new Polynomial_Regression_Algorithm(order,solver);
 			regress(input_file, output_file, start, end, step,
 					regresss);
 		} else {
