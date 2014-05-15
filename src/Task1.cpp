@@ -20,16 +20,16 @@ using namespace std;
 void help() {
 	cout << "Welcome" << endl;
 	cout << "Regression: " << endl;
-		cout
-		<< "Usage : ./Task1 --regress <Algorithm> <Input file name> <Output Prefix> <Start> <End> <Step Size> <order> <linear quation solvers>"
-		<< endl;
-		;
-		cout << "Available Algorithms: " << endl;
-		cout << "\t--Linear" << endl;
-		cout << "\t--Polynomial" << endl;
-		cout << "Available Solvers: default (Elimination)" << endl;
-			cout << "\t--siedel" << endl;
-			cout << "\t--elimination" << endl;
+	cout
+	<< "Usage : ./Task1 --regress <Algorithm> <Input file name> <Output Prefix> <Start> <End> <Step Size> <order> <linear quation solvers>"
+	<< endl;
+	;
+	cout << "Available Algorithms: " << endl;
+	cout << "\t--Linear" << endl;
+	cout << "\t--Polynomial" << endl;
+	cout << "Available Solvers: default (Elimination)" << endl;
+	cout << "\t--siedel" << endl;
+	cout << "\t--elimination" << endl;
 
 	cout << "interpolation: " << endl;
 	cout
@@ -84,14 +84,14 @@ void interpolate(string input_file_name, string output_prefix, int start,
 	Interpolate_Algo interpolater;
 	vector<Point> res = interpolater.solve(input, start, end, step);
 	double nan=1.0/0.0;
-//	for (int i =0; i < res.size();i++)
-//	{
-//		if(res[i].y !=res[i].y)
-//		{
-//			res.erase(res.begin()+i);
-//			i--;
-//		}
-//	}
+	//	for (int i =0; i < res.size();i++)
+	//	{
+	//		if(res[i].y !=res[i].y)
+	//		{
+	//			res.erase(res.begin()+i);
+	//			i--;
+	//		}
+	//	}
 	ofstream output_dat(string(output_prefix + "out.dat").c_str());
 	for (int i = 0; i < res.size() - 1; i++)
 		output_dat << res.at(i).x << "\t" << res.at(i).y << endl;
@@ -114,40 +114,81 @@ int main(int argc, char* argv[]) {
 
 	srand(time(NULL));
 	if (string("--solve").compare(argv[1]) == 0) {
-		cout << "ssssss" << endl;
-	//	const int n = 2;
-		GaussianSeidel solver = GaussianSeidel(0.00000000000001);
-
-//		vector<vector<double> > m(2);
-//		m[0] = vector<double>(3);
-//		m[0][0] = 3, m[0][1] = -0.1, m[0][2] = 18;
-//
-//		m[1] = vector<double>(3);
-//		m[1][0] = -1, m[1][1] = 2, m[1][2] = 2;
-
-		 int n = 3;
-		 vector<vector<double> > m(n);
-		 m[0] = vector<double>(4);
-		 m[0][0] = 3;
-		 m[0][1] = -0.1;
-		 m[0][2] = -0.2;
-		 m[0][3] = 7.85;
-		 m[1] = vector<double>(4);
-		 m[1][0] = 0.1;
-		 m[1][1] = 7;
-		 m[1][2] = -0.3;
-		 m[1][3] = -19.3;
-		 m[2] = vector<double>(4);
-		 m[2][0] = 0.3;
-		 m[2][1] = -0.2;
-		 m[2][2] = 10;
-		 m[2][3] = 71.4;
-
-		vector<double> res = solver.solve(m, n);
-		for (int i = 0; i < n; i++) {
-			cout << res[i] << " ";
+		//radom data generator
+		int N=atoi(argv[3]);
+		vector<vector<double> >m(N);
+		for(int i=0;i<N;i++)
+		{
+			m[i]=vector<double>(N+1);
+			double sum=0;
+			for(int j=0;j<N+1;j++)
+			{
+				if(i!=j)
+				{
+					double curr=rand()%10000;
+					double sign=rand()%2;
+					sign =(sign==0? 1:-1);
+					curr*=sign;
+					sum+=curr;
+					m[i][j]=curr;
+				}
+			}
+			m[i][i]=sum+rand()%100;
 		}
-		cout << endl;
+		cerr<<"Data Preparation is finised"<<endl;
+		vector<double> res;
+		if(string("--elimination").compare(argv[2])==0){
+			GAUSSIAN_ELIMINATION_Solver solver=GAUSSIAN_ELIMINATION_Solver();
+			res = solver.solve(m, N);
+		}
+		else if(string("--seidel").compare(argv[2])==0){
+			float acc=atof(argv[4]);
+			GaussianSeidel solver=GaussianSeidel(acc);
+			res = solver.solve(m, N);
+		}
+		else
+		{
+			cerr<<"unsupported Algorithm"<<endl;
+			return 0;
+		}
+		for(int i=0;i<N;i++)
+			cout<<res[i]<<endl;
+		double error=0;
+		for (int i = 0; i < N; i++) {
+			double sum=0;
+			for(int j=0;j<N;j++)
+
+				sum+=m[i][j]*res[j];
+			error+=fabs(sum-m[i][N]);
+		}
+		cout<<"Total Absolute  Error = "<<error << endl;
+
+		//		vector<vector<double> > m(2);
+		//		m[0] = vector<double>(3);
+		//		m[0][0] = 3, m[0][1] = -0.1, m[0][2] = 18;
+		//
+		//		m[1] = vector<double>(3);
+		//		m[1][0] = -1, m[1][1] = 2, m[1][2] = 2;
+		//
+		//		 int n = 3;
+		//		 vector<vector<double> > m(n);
+		//		 m[0] = vector<double>(4);
+		//		 m[0][0] = 3;
+		//		 m[0][1] = -0.1;
+		//		 m[0][2] = -0.2;
+		//		 m[0][3] = 7.85;
+		//		 m[1] = vector<double>(4);
+		//		 m[1][0] = 0.1;
+		//		 m[1][1] = 7;
+		//		 m[1][2] = -0.3;
+		//		 m[1][3] = -19.3;
+		//		 m[2] = vector<double>(4);
+		//		 m[2][0] = 0.3;
+		//		 m[2][1] = -0.2;
+		//		 m[2][2] = 10;
+		//		 m[2][3] = 71.4;
+
+
 	} else if (string("--interpolate").compare(argv[1]) == 0) {
 		cout << "Interpolate .. " << endl;
 		string algorithm = argv[2];
