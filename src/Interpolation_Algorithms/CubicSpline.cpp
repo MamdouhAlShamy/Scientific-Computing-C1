@@ -7,7 +7,7 @@
 
 #include "CubicSpline.h"
 
-#include "../Linear_Equ_Solving_Algorithms/Solvers.h"
+#include "../Linear_Equ_Solving_Algorithms/GAUSSIANELIMINATIONSolver.h"
 
 CubicSpline::CubicSpline() {
 
@@ -73,21 +73,91 @@ double CubicSpline::interpolate(vector<Point> data, double * d2x, double xu) {
 }
 
 vector<double> CubicSpline::subst(double * e, double * f, double * g,
-		double * r) {
-	GaussianSeidel solver = GaussianSeidel(0.000001);
-//	GAUSSIAN_ELIMINATION_Solver solver =GAUSSIAN_ELIMINATION_Solver();
-	int numberOfEquations = 2;
-	vector<vector<double> > m(numberOfEquations);
-	m[0] = vector<double>(3);
-	m[0][0] = f[1];
-	m[0][1] = g[1];
-	m[0][2] = r[1];
-	m[1] = vector<double>(3);
-	m[1][0] = e[2];
-	m[1][1] = f[2];
-	m[1][2] = r[2];
-	vector<double> res = solver.solve(m, numberOfEquations);
-	return res;
+		double * r, int numberOfInterval) {
+	cout << "numberOfInterval: " << numberOfInterval << endl;
+	GAUSSIAN_ELIMINATION_Solver solver = GAUSSIAN_ELIMINATION_Solver();
+
+	vector<vector<double> > m(numberOfInterval - 1);
+	// fill m w zeros
+
+	for (int i = 0; i < numberOfInterval - 1; i++) {
+		// Create Row
+		m[i] = vector<double>(numberOfInterval);
+		// First Equation
+		if (i == 0) {
+			cout << "Eq: 0" << endl;
+			m[0][0] = f[1];
+			m[0][1] = g[1];
+		}
+		// Last Equation
+		else if (i == numberOfInterval - 2) {
+			cout << "last Eq: " << i << endl;
+			m[i][numberOfInterval - 3] = e[i + 1];
+			m[i][numberOfInterval - 2] = f[i + 1];
+		}
+		// inside Equation
+		else {
+			cout << "Eq: " << i << endl;
+			m[i][i - 1] = e[i + 1];
+			m[i][i] = f[i + 1];
+			m[i][i + 1] = g[i + 1];
+		}
+		// after equal sign value
+		m[i][numberOfInterval - 1] = r[i + 1];
+
+	}
+
+// working model for 18.8m
+//	vector<vector<double> > m(numberOfInterval-1);
+//	m[0] = vector<double>(numberOfInterval);
+//	m[0][0] = f[1];
+//	m[0][1] = g[1];
+//	m[0][2] = 0;
+//	m[0][3] = r[1];
+//
+//	m[1] = vector<double>(numberOfInterval);
+//	m[1][0] = e[2];
+//	m[1][1] = f[2];
+//	m[1][2] = g[2];
+//	m[1][3] = r[2];
+//
+//	m[2] = vector<double>(numberOfInterval);
+//	m[2][0] = 0;
+//	m[2][1] = e[3];
+//	m[2][2] = f[3];
+//	m[2][3] = r[3];
+
+//	vector<vector<double> > m(numberOfInterval);
+//	m[0] = vector<double>(3);
+//	m[0][0] = f[1];
+//	m[0][1] = g[1];
+//	m[0][2] = r[1];
+//
+//	m[1] = vector<double>(3);
+//	m[1][0] = e[2];
+//	m[1][1] = f[2];
+//	m[1][2] = r[2];
+
+//	// FIXME Issue in Solving Equations simultaneously
+//	vector<vector<double> > m(numberOfInterval);
+//	for (int i = 0; i < numberOfInterval - 1; i++) {
+//		m[i] = vector<double>(3);
+//		m[i][0] = f[i + 1];
+//		m[i][1] = g[i + 1];
+//		m[i][2] = r[i + 1];
+//	}
+//
+//	m[numberOfInterval - 1] = vector<double>(3);
+//	m[numberOfInterval - 1][0] = e[numberOfInterval];
+//	m[numberOfInterval - 1][1] = f[numberOfInterval];
+//	m[numberOfInterval - 1][2] = r[numberOfInterval];
+
+//	for (int i = 0; i < numberOfInterval; i++) {
+//		for (int j = 0; j < 3; j++) {
+//			cout << "m[" << i << "][" << j << "]" << m[i][j] << endl;
+//		}
+//	}
+	return solver.solve(m, numberOfInterval - 1);
 }
 
 vector<Point> CubicSpline::solve(vector<Point> data, int start, int end,
@@ -95,6 +165,7 @@ vector<Point> CubicSpline::solve(vector<Point> data, int start, int end,
 
 	vector<Point> search;
 	int n = data.size();
+//cout << "n: " << n << endl;
 	double e[n], f[n], g[n], r[n], dd2x[n]; // they are numbered w no of intervals +1 as [0] is not used
 	std::fill_n(e, n, 0);
 	std::fill_n(f, n, 0);
@@ -110,15 +181,15 @@ vector<Point> CubicSpline::solve(vector<Point> data, int start, int end,
 		cout << "r[" << i << "]" << '\t' << r[i] << endl;
 	}
 	double xu, yu;
-	vector<double> d2x;
-	d2x = subst(e, f, g, r);
+	vector<double> d2x(n - 1);
+	d2x = subst(e, f, g, r, n - 1);
 	cout << "EQUATION SOLVED" << endl;
 	for (int i = 1; i < n - 1; i++) {
 		dd2x[i] = d2x[i - 1];
 		cout << "dd2x" << dd2x[i] << endl;
 	}
 
-	// LOOPING to make a curve
+// LOOPING to make a curve
 	for (xu = start; xu <= end; xu += step) {
 		yu = interpolate(data, dd2x, xu);
 		cout << "xu: " << xu << '\t' << "yu: " << yu << endl;
